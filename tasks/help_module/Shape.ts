@@ -22,8 +22,9 @@ abstract class Shape {
   }
 
   toString() {
-    let returnText =
-      "A Shape with color of xxx and filled/Not filled. Points: ";
+    let returnText = `A Shape with color of ${this.color} and ${
+      this.filled ? "filled" : "not filled"
+    }. Points: `;
 
     this.points.forEach((point, index) => {
       returnText += point.toString();
