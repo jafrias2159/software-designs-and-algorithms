@@ -13,7 +13,7 @@ class Point {
       this.y = 0;
     } else {
       this.x = coordinateX;
-      this.y = coordinateX;
+      this.y = coordinateY;
     }
   }
 
