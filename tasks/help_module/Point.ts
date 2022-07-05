@@ -5,7 +5,10 @@ class Point {
   constructor();
   constructor(x: number, y: number);
   constructor(coordinateX?: number, coordinateY?: number) {
-    if (!coordinateX || !coordinateY) {
+    if (
+      typeof coordinateX === "undefined" ||
+      typeof coordinateY === "undefined"
+    ) {
       this.x = 0;
       this.y = 0;
     } else {
@@ -39,9 +42,11 @@ class Point {
   }
 }
 
+const originPoint = new Point();
 const pointA = new Point(10, 10);
 const pointB = new Point(20, 20);
 
-console.log("Getting distance using no params:", pointA.distance());
-console.log("Getting distance using pointB:", pointA.distance(pointB));
-console.log("Getting distance using plain values", pointA.distance(20, 20));
+console.log("Distance using no params:", pointA.distance());
+console.log("Distance using pointB:", pointA.distance(pointB));
+console.log("Distance using pointB", originPoint.distance(pointB));
+console.log("Distance using plain values", pointA.distance(20, 20));
