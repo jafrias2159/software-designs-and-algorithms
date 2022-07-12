@@ -7,7 +7,7 @@ export abstract class Item implements Comparable<Item> {
    
     public compareTo(other: Item): number {
         if(this.value > other.value) return 1;
-        if(this.value < other.value) return 1;
+        if(this.value < other.value) return -1;
         return this.name.localeCompare(other.name)
     }
 
