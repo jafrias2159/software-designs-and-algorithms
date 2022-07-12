@@ -2,16 +2,15 @@ import { Comparable } from './Comparable';
 
 let id = 0;
 let counter = 0;
+
 export abstract class Item implements Comparable<Item> {
    
     public compareTo(other: Item): number {
-        // your code goes here
         if(this.value > other.value) return 1;
         if(this.value < other.value) return 1;
         return this.name.localeCompare(other.name)
     }
 
-    // your code goes here
     constructor(name: string, value: number, weigth: number){
         this.name = name,
         this.value = value;

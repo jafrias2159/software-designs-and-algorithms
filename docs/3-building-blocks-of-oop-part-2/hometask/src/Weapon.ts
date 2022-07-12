@@ -5,11 +5,13 @@ export abstract class Weapon extends Item {
     name: string,
     baseDamage: number,
     baseDurability: number,
-    value: number
+    value: number,
+    weigth: number,
   ) {
     super(name, value, 0);
     this._baseDamage = baseDamage;
     this._baseDurability = baseDurability;
+    this._weight = weigth;
   }
 
   public MODIFIER_CHANGE_RATE = 0.05;
@@ -44,6 +46,14 @@ export abstract class Weapon extends Item {
   }
   public set durabilityModifier(value: number) {
     this._durabilityModifier = value;
+  }
+
+  private _weight: number;
+  public get weight(): number {
+    return this._weight;
+  }
+  public set weight(value: number) {
+    this._weight = value;
   }
 
   public polish() {}
