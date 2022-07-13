@@ -1,5 +1,6 @@
 import { Item } from "./Item";
 import { ItemComparator } from "./ItemComparator";
+import { ItemWeightComparator } from "./ItemWeightComparator";
 
 export class Inventory implements ItemComparator {
   compare(first: Item, second: Item): number {
@@ -15,9 +16,17 @@ export class Inventory implements ItemComparator {
   public sort(comparator: ItemComparator): void;
   public sort(comparator?: ItemComparator): void {
     if (typeof comparator === "undefined") {
-      // Sort by any characteritcs in array
+      this.items.sort((elementA, elementB) => {
+        if (elementA.value <= elementB.value) {
+          return 1;
+        }
+        return -1;
+      });
     } else {
-      //Sort array with new ItemWeightComparator() instance
+      this.items.sort((elementA: Item, elementB: Item) => {
+        const itemWeightComparator = new ItemWeightComparator();
+        return itemWeightComparator.compare(elementA, elementB);
+      });
     }
   }
 
