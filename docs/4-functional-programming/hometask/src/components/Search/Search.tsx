@@ -4,9 +4,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
 import styles from './Search.module.scss';
+import { Row } from '../Table';
 
 interface SearchProps {
-  store?: {};
+  store?: Row[];
   updateStore?: (val) => void;
 }
 
@@ -23,8 +24,12 @@ export function Search(props: SearchProps) {
   const [searchedValue, setSearchedValue] = useState<string>('');
 
   const onChange = (value) => {
-    console.log(value); // for debugging
+   
+    const selectedRows = props.store.filter((rowITem: Row)=>{
+      return (new RegExp(`${value}`, "i")).test(rowITem.country);
+    });
     setSearchedValue(value);
+    props.updateStore(selectedRows);
   }
 
   return (
