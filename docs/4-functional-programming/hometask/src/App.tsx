@@ -14,28 +14,63 @@ import rows from './mocks/rows.json';
 // mockedData has to be replaced with parsed Promises’ data
 const mockedData: Row[] = rows.data;
 
-function App() {
-  const [data, setData] = useState<Row[]>(undefined);
+const dataConverter = (
+  users: User[],
+  accounts: Account[],
+  images: Image[]
+): Row[] => {
 
-  useEffect(() => {
+  const concatedUserData = [];
+  users.forEach((user, index) => {
+    concatedUserData.push({
+      ...user,
+      ...accounts[index],
+      ...images[index],
+    });
+  });
+
+  let convertedData: Row[] = concatedUserData.map((userData) => {
+    return {
+      avatar: userData.url,
+      username: userData.username,
+      country: userData.country,
+      name: userData.name,
+      lastPayments: userData.payments[0]?.totalSum || 0,
+      posts: userData.posts
+    }
+  });
+
+  return convertedData;
+};
+
+function App() {
+  const [data, setData] = useState<Row[]>([]);
+  const [presentedData, setPresentedData] = useState<Row[]>(data);
+  const [searchData, setSearchData] = useState<Row[]>(presentedData);
+
+useEffect(() => {
     // fetching data from API
     Promise.all([getImages(), getUsers(), getAccounts()]).then(
-      ([images, users, accounts]: [Image[], User[], Account[]]) =>
-        console.log(images, users, accounts)
+      ([images, users, accounts]: [Image[], User[], Account[]]) =>{
+        const convertedData = dataConverter(users,accounts,images);
+        setData(convertedData);
+        setPresentedData(convertedData);
+      }
     );
   }, [])
+
 
   return (
     <StyledEngineProvider injectFirst>
       <div className="App">
         <div className={styles.container}>
           <div className={styles.sortFilterContainer}>
-            <Filters />
+            <Filters updateStore={setPresentedData} store={data} setSearchData={setSearchData}/>
             <Sort />
           </div>
-          <Search />
+          <Search store={presentedData} updateStore={setSearchData}/>
         </div>
-        <Table rows={data || mockedData} />
+        <Table rows={searchData || mockedData} />
       </div>
     </StyledEngineProvider>
   );

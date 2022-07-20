@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 
 import styles from './Filters.module.scss';
+import { Row } from '../Table';
 
 interface FiltersProps {
-  store?: {};
+  store?: Row[];
   updateStore?: (val) => void;
+  setSearchData?: (val) => void;
+
 }
 
 // OR
@@ -34,15 +37,39 @@ export function Filters(props: FiltersProps) {
 
     let updatedFilters;
     if (selectedFilter.find((filter) => filter === title)) {
-      updatedFilters = selectedFilter.filter(
-        (filter) => filter !== title
-      );
+      updatedFilters = selectedFilter.filter((filter) => filter !== title);
     } else {
       updatedFilters = [...selectedFilter, title];
     }
 
     setSelectedFilter(updatedFilters);
   };
+
+  const filteredValues = useMemo(() => {
+    const withCeroPost = selectedFilter.find(
+      (filter) => filter === 'Without posts'
+    )
+      ? true
+      : false;
+    const withHundredPost = selectedFilter.find(
+      (filter) => filter === 'More than 100 posts'
+    )
+      ? true
+      : false;
+    const filteredRows = props.store.filter((userInfo: Row) => {
+      if (withCeroPost && userInfo.posts === 0) return true;
+      if (withHundredPost && userInfo.posts >= 100) return true;
+      return false;
+    });
+
+    return filteredRows.length === 0 ? [...props.store] : filteredRows;
+  }, [selectedFilter, props.store]);
+
+
+    useEffect(() => {
+      props.updateStore(filteredValues);
+      props.setSearchData(filteredValues);
+    }, [filteredValues, props.setSearchData, props.updateStore])
 
   return (
     <div className={styles.group}>
@@ -55,7 +82,9 @@ export function Filters(props: FiltersProps) {
             key={option.title}
           >
             <Checkbox
-              checked={!!selectedFilter.find(filter => filter === option.title)}
+              checked={
+                !!selectedFilter.find((filter) => filter === option.title)
+              }
               value={option.title}
               onChange={() => onChange(option)}
               size="small"
